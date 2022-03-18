@@ -68,6 +68,16 @@ func(repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) 
 		); erro != nil {
 			return nil, erro
 		}
+		// userAtt :=  modelos.Usuario{
+		// 	usuario.ID,
+		// 	usuario.Nome,
+		// 	usuario.Nick,
+		// 	usuario.Senha,
+		// 	usuario.Email,
+		// 	usuario.CriadoEm,
+		// 	}
+
+		// 	usuarios = append(usuarios, userAtt)
 
 		usuarios = append(usuarios, usuario)
 	}

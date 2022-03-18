@@ -74,7 +74,7 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 
-	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioID"], 10, 64)
 	if erro != nil {
      respostas.Erro(w, http.StatusBadRequest, erro)
 		 return	
@@ -100,7 +100,7 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 // AtualizarUsuario altera as informações de um usuário no banco
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
    parametros := mux.Vars(r)
-	 usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
+	 usuarioID, erro := strconv.ParseUint(parametros["usuarioID"], 10, 64)
 	 if erro != nil {
 		 respostas.Erro(w, http.StatusBadRequest, erro)
 		 return
@@ -108,8 +108,8 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	 corpoRequisicao, erro := ioutil.ReadAll(r.Body)
 	 respostas.Erro(w, http.StatusUnprocessableEntity, erro)
 	 return
-
-	 var usuario modelos.Usuario
+	 
+   	 var usuario modelos.Usuario
 	 if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil {
 		 respostas.Erro(w, http.StatusBadRequest, erro)
 		 return
@@ -139,7 +139,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 // DeletarUsuario exclui as informações de um usuário no banco
 func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
   parametros := mux.Vars(r)
-	usuarioID, erro := strconv.ParseUint(parametros["usuariosId"], 10, 64)
+	usuarioID, erro := strconv.ParseUint(parametros["usuariosID"], 10, 64)
 	if erro != nil {
 		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
