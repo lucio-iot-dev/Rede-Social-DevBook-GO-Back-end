@@ -8,39 +8,40 @@ import (
 
 // Usuarios representa um repositório de usuarios
 type Usuarios struct {
-	 db *sql.DB
+	db *sql.DB
 }
+
 // NovoRepositorioDeUsuarios cria um repositório de usuários
 func NovoRepositorioDeUsuarios(db *sql.DB) *Usuarios {
-    return &Usuarios{db}
+	return &Usuarios{db}
 }
 
 // Criar insere um usuário no banco de dados
 func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
-	 statement, erro := repositorio.db.Prepare(
-		 "insert into usuarios (nome, nick, email, senha) values(?, ?, ?, ?)",
-		)
-		if erro != nil {
-			  return 0, erro
-		}
-		defer statement.Close()
-
-		resultado, erro := statement.Exec(usuario.Nome, usuario.Nick, usuario.Email, usuario.Senha)
-		if erro != nil {
-			return 0, erro
-	}
-	 
-	ultimoIDInserido, erro := resultado.LastInsertId()
-	 if erro != nil {
+	statement, erro := repositorio.db.Prepare(
+		"insert into usuarios (nome, nick, email, senha) values(?, ?, ?, ?)",
+	)
+	if erro != nil {
 		return 0, erro
-   }
+	}
+	defer statement.Close()
 
-  return uint64(ultimoIDInserido), nil
+	resultado, erro := statement.Exec(usuario.Nome, usuario.Nick, usuario.Email, usuario.Senha)
+	if erro != nil {
+		return 0, erro
+	}
+
+	ultimoIDInserido, erro := resultado.LastInsertId()
+	if erro != nil {
+		return 0, erro
+	}
+
+	return uint64(ultimoIDInserido), nil
 
 }
 
 // Buscar traz todos os usuários que atendem um filtro de nome ou nick
-func(repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) {
+func (repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) {
 	nomeOuNick = fmt.Sprintf("%%%s%%", nomeOuNick) // %nomeOuNick%
 
 	linhas, erro := repositorio.db.Query(
@@ -49,7 +50,7 @@ func(repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) 
 	)
 
 	if erro != nil {
-		return nil ,erro
+		return nil, erro
 	}
 
 	defer linhas.Close()
@@ -68,7 +69,7 @@ func(repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) 
 		); erro != nil {
 			return nil, erro
 		}
-	
+
 		usuarios = append(usuarios, usuario)
 	}
 
@@ -76,31 +77,31 @@ func(repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) 
 }
 
 // BuscarPorID traz um usuário do banco de dados
-func(repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
-   linhas, erro := repositorio.db.Query(
-		 "select id, nome, nick, email, criadoEm from usuarios where id = ?",
-		 ID,
-	 )
-	 if erro != nil {
-		 return modelos.Usuario{}, erro
-	 }
-	 defer linhas.Close()
+func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
+	linhas, erro := repositorio.db.Query(
+		"select id, nome, nick, email, criadoEm from usuarios where id = ?",
+		ID,
+	)
+	if erro != nil {
+		return modelos.Usuario{}, erro
+	}
+	defer linhas.Close()
 
-	 var usuario modelos.Usuario
+	var usuario modelos.Usuario
 
-	 if linhas.Next() {
-		 if erro = linhas.Scan(
-			 &usuario.ID,
-			 &usuario.Nome,
-			 &usuario.Nick,
-			 &usuario.Email,
-			 &usuario.CriadoEm,
-		 ); erro != nil {
-			 return modelos.Usuario{}, erro
-		 }
-	 }
+	if linhas.Next() {
+		if erro = linhas.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Nick,
+			&usuario.Email,
+			&usuario.CriadoEm,
+		); erro != nil {
+			return modelos.Usuario{}, erro
+		}
+	}
 
-	 return usuario, nil
+	return usuario, nil
 
 }
 
@@ -129,7 +130,7 @@ func (repositorio Usuarios) Deletar(ID uint64) error {
 	}
 	defer statement.Close()
 
-	if _,erro = statement.Exec(ID); erro != nil {
+	if _, erro = statement.Exec(ID); erro != nil {
 		return erro
 	}
 	return nil

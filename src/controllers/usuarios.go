@@ -99,20 +99,23 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 }
 // AtualizarUsuario altera as informações de um usuário no banco
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
-   parametros := mux.Vars(r)
-	 usuarioID, erro := strconv.ParseUint(parametros["usuarioID"], 10, 64)
-	 if erro != nil {
-		 respostas.Erro(w, http.StatusBadRequest, erro)
-		 return
-	 }
-	 corpoRequisicao, erro := ioutil.ReadAll(r.Body)
-	 respostas.Erro(w, http.StatusUnprocessableEntity, erro)
-	 return
+	parametros := mux.Vars(r)
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+	corpoRequisicao, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
 	 var usuario modelos.Usuario
-	 if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil {
-		 respostas.Erro(w, http.StatusBadRequest, erro)
-		 return
-	 }
+	if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
 	 if erro = usuario.Preparar("edicao"); erro != nil {
 		 respostas.Erro(w, http.StatusBadRequest, erro)
 		 return
