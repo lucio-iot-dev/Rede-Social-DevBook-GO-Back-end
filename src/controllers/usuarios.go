@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"api/src/autenticacao"
 	"api/src/banco"
 	"api/src/modelos"
 	"api/src/repositorios"
 	"api/src/respostas"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -105,6 +107,18 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
+	//Depois que eu ler o usuarioId que esta na requisição como mostra acima, eu vou abaixo ler o usuarioID que esta no token
+	usuarioIDNoToken, erro := autenticacao.ExtrairusuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+   // Agora é só fazer uma comparação entre o usuarioID da requisição como usuarioIDNoToken para ver se é a mesma pessoa.Para não correr o risco de um usuário logar e deletar informaçoes de outros usuários.
+	 if usuarioID != usuarioIDNoToken {
+		 respostas.Erro(w, http.StatusForbidden, errors.New("Não é possivel atualizar um usuário que não seja o seu"))
+		 return
+	 }
+
 	corpoRequisicao, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {
 		respostas.Erro(w, http.StatusUnprocessableEntity, erro)
@@ -141,6 +155,17 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	usuarioID, erro := strconv.ParseUint(parametros["usuariosID"], 10, 64)
 	if erro != nil {
 		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	usuarioIDNoToken, erro := autenticacao.ExtrairusuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	if usuarioID != usuarioIDNoToken {
+		respostas.Erro(w, http.StatusForbidden, errors.New("Não é possivel deletar um usuário que não seja o seu"))
 		return
 	}
 
