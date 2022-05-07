@@ -41,4 +41,9 @@ Existe em seu conteúdo:
 - Criação  Crud;
 - Banco de dados Mysql
 
+
+## :memo: Licença
+
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](https://github.com/lucio-iot-dev/Rede-Social-DevBook-GO-Back-end/blob/main/LICENSE) para mais detalhes.
+
 Dev: Lúcio do Nascimento.
